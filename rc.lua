@@ -15,6 +15,7 @@ local beautiful = require("beautiful")
 local naughty   = require("naughty")
 local drop      = require("scratchdrop")
 local lain      = require("lain")
+local treesome      = require("treesome")
 -- }}}
 
 -- {{{ Error handling
@@ -53,6 +54,7 @@ autostart("unclutter -root")
 autostart("spacefm -d")
 autostart("nm-applet")
 autostart("pulseaudio --start")
+autostart("compton -b --config ~/.compton.conf")
 
 -- }}}
 
@@ -78,6 +80,7 @@ iptraf     = terminal .. " -g 180x54-20+34 -e sudo iptraf-ng -i all "
 musicplr   = "pianobar"
 
 local layouts = {
+  treesome,
   awful.layout.suit.tile,
   awful.layout.suit.spiral.dwindle,
   awful.layout.suit.floating,
@@ -620,10 +623,12 @@ globalkeys = awful.util.table.join(
     awful.key({ modkey }, "g", function () awful.util.spawn(graphics) end),
 
     -- Brightness control (Script which uses 'volnoti' as notification) SYNTAX: up/down | percentagpts/kbdbrighE
-    awful.key({ }, "XF86KbdBrightnessUp", function () awful.util.spawn_with_shell("echo 3 > /sys/class/leds/asus\\:\\:kbd_backlight/brightness") end),
-    awful.key({ }, "XF86KbdBrightnessDown", function () awful.util.spawn_with_shell("echo 0 > /sys/class/leds/asus\\:\\:kbd_backlight/brightness") end),
-    awful.key({ }, "XF86MonBrightnessUp",   function () awful.util.spawn_with_shell(awful.util.getdir("config") .. "/scripts/brightness.sh up") end),
-    awful.key({ }, "XF86MonBrightnessDown", function () awful.util.spawn_with_shell(awful.util.getdir("config") .. "/scripts/brightness.sh down") end),
+    -- awful.key({ }, "XF86KbdBrightnessUp", function () awful.util.spawn_with_shell("echo 3 > /sys/class/leds/asus\\:\\:kbd_backlight/brightness") end),
+    -- awful.key({ }, "XF86KbdBrightnessDown", function () awful.util.spawn_with_shell("echo 0 > /sys/class/leds/asus\\:\\:kbd_backlight/brightness") end),
+    -- awful.key({ }, "XF86MonBrightnessUp",   function () awful.util.spawn_with_shell(awful.util.getdir("config") .. "/scripts/brightness.sh up") end),
+    -- awful.key({ }, "XF86MonBrightnessDown", function () awful.util.spawn_with_shell(awful.util.getdir("config") .. "/scripts/brightness.sh down") end),
+    awful.key({ }, "XF86KbdBrightnessUp", function () awful.util.spawn_with_shell("xbacklight -inc 10%") end),
+    awful.key({ }, "XF86KbdBrightnessDown", function () awful.util.spawn_with_shell("xbacklight -dec 10%") end),
 
     -- Enable Touchpad only when key is held
     awful.key({ }, "Menu", nil, function () awful.util.spawn_with_shell('synclient TouchpadOff=1') end),
@@ -740,8 +745,8 @@ awful.rules.rules = {
                      keys = clientkeys,
                      buttons = clientbuttons,
 	                   size_hints_honor = false } },
-    { rule = { class = "URxvt" },
-          properties = { opacity = 0.99 } },
+    --{ rule = { class = "URxvt" },
+    --      properties = { opacity = 0.99 } },
 
     { rule = { class = "MPlayer" },
           properties = { floating = true } },
