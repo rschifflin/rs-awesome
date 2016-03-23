@@ -255,7 +255,7 @@ fsicon = wibox.widget.textbox('')
 fsicon:set_markup(markup_icon(fa_filesystem))
 
 fswidget = lain.widgets.fs({
-    partition = "/home",
+    partition = "/",
     settings = function()
         widget:set_text(" " .. fs_now.used .. "% ")
     end
@@ -615,6 +615,18 @@ globalkeys = awful.util.table.join(
 
     -- Copy to clipboard
     awful.key({ modkey }, "c", function () os.execute("xsel -p -o | xsel -i -b") end),
+
+    -- Paste from clipboard
+    awful.key({ modkey }, "v", function () os.execute([=[
+      CURRENT_WINDOW=`xdotool getwindowfocus`;
+      CURRENT_WINDOW_NAME=`xdotool getwindowname $CURRENT_WINDOW`;
+
+      if [[ $CURRENT_WINDOW_NAME =~ "Chromium" ]]; then
+        xvkbd -xsendevent -text "\S\[Insert]";
+      else
+        xvkbd -xsendevent -text "\C\Av";
+      fi;
+    ]=]) end),
 
     -- User programs
     -- awful.key({ modkey }, "q", function () awful.util.spawn(browser) end), -- Spawned below under Applications
